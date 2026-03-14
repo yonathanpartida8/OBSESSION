@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Te Amo Marissa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cutive+Mono&display=swap');
+
+:root {
+  --rose:  #e0003f;
+  --blush: #ff7aa0;
+  --petal: #ffd6e4;
+  --ivory: #faf0f2;
+  --dark:  #090004;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--dark);
+  font-family: 'Cormorant Garamond', serif;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  cursor: none;
+}
+
+/* ─── CURSOR ─── */
+#cur {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--rose); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 10px rgba(224,0,63,.9), 0 0 24px rgba(224,0,63,.4);
+  transition: width .12s, height .12s;
+}
+#cur.big { width: 36px; height: 36px; opacity: .4; }
+
+/* ─── BACKGROUND ─── */
+#bg {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 130% 80% at 10% 110%, rgba(160,0,45,.5) 0%, transparent 50%),
+    radial-gradient(ellipse 80%  60% at 90% -10%, rgba(100,0,30,.4) 0%, transparent 50%),
+    radial-gradient(ellipse 60%  50% at 50%  50%, rgba(50,0,15,.55)  0%, transparent 65%),
+    #07000a;
+  animation: bgp 9s ease-in-out infinite alternate;
+}
+@keyframes bgp { from{filter:brightness(1)} to{filter:brightness(1.18)} }
+
+/* ─── ORBS ─── */
+.orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 1; }
+#o1 { width:560px;height:560px; background:radial-gradient(circle,rgba(224,0,63,.17),transparent 70%); top:-200px;left:-160px; animation:ob1 20s ease-in-out infinite; }
+#o2 { width:420px;height:420px; background:radial-gradient(circle,rgba(180,0,50,.13),transparent 70%); bottom:-150px;right:-150px; animation:ob2 24s ease-in-out infinite; }
+#o3 { width:280px;height:280px; background:radial-gradient(circle,rgba(255,120,160,.09),transparent 70%); top:50%;left:50%;transform:translate(-50%,-50%); animation:ob3 15s ease-in-out infinite; }
+@keyframes ob1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(55px,45px)} }
+@keyframes ob2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,-60px)} }
+@keyframes ob3 { 0%,100%{transform:translate(-50%,-50%)scale(1)} 50%{transform:translate(-50%,-50%)scale(1.5)} }
+
+/* ─── GRAIN ─── */
+#grain {
+  position: fixed; inset: 0; z-index: 2; pointer-events: none; opacity: .07;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0/180px;
+  animation: gsh .1s steps(1) infinite;
+}
+@keyframes gsh {
+  0%{transform:translate(0,0)} 20%{transform:translate(-2px,3px)}
+  40%{transform:translate(3px,-2px)} 60%{transform:translate(-3px,1px)} 80%{transform:translate(2px,3px)}
+}
+
+/* ─── VIGNETTE ─── */
+#vig {
+  position: fixed; inset: 0; z-index: 3; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 28%, rgba(0,0,0,.52) 65%, rgba(0,0,0,.95) 100%);
+}
+
+/* ─── RAIN LAYER — posicion absoluta, sin canvas ─── */
+#rainlayer { position: fixed; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
+.rd {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: var(--blush);
+  text-shadow: 0 0 12px rgba(255,122,160,.55);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ─── CANVAS ─── */
+#pcan { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+#wcan { position: fixed; bottom: 70px; left: 0; width: 100%; height: 80px; z-index: 6; pointer-events: none; opacity: .5; }
+
+/* ─── FLASH ─── */
+#flash { position: fixed; inset: 0; z-index: 7; pointer-events: none; background: rgba(224,0,63,.06); opacity: 0; }
+
+/* ─── DEDICATION ─── */
+#ded {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 22px 20px 0;
+  pointer-events: none;
+  transition: opacity 3s;
+}
+.d-label {
+  font-family: 'Cutive Mono', monospace;
+  font-size: clamp(9px,1.2vw,11px); letter-spacing: 7px;
+  color: rgba(255,214,228,.22); text-transform: uppercase; margin-bottom: 5px;
+}
+.d-name {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 700;
+  font-size: clamp(18px,4.5vw,56px); letter-spacing: .06em; color: var(--ivory);
+  line-height: 1.1; text-align: center;
+  text-shadow: 0 0 50px rgba(224,0,63,.8), 0 0 110px rgba(224,0,63,.3), 0 2px 5px #000;
+  animation: namegl 3.5s ease-in-out infinite;
+}
+@keyframes namegl {
+  0%,100% { text-shadow: 0 0 50px rgba(224,0,63,.8),0 0 110px rgba(224,0,63,.3),0 2px 5px #000 }
+  50%     { text-shadow: 0 0 80px rgba(224,0,63,1), 0 0 180px rgba(224,0,63,.6),0 2px 5px #000 }
+}
+.d-rule {
+  width: 42px; height: 1px; margin-top: 8px;
+  background: linear-gradient(to right, transparent, var(--rose), transparent);
+  animation: rul 2.5s ease-in-out infinite;
+}
+@keyframes rul { 0%,100%{width:42px;opacity:.6} 50%{width:76px;opacity:1} }
+
+/* ─── LYRIC STAGE ─── */
+#stage {
+  position: fixed; inset: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: center;
+  padding: 140px 28px 110px;
+  pointer-events: none;
+}
+#lbox {
+  width: min(92vw, 880px); text-align: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+}
+
+/* ─── LYRIC LINE STATES ─── */
+.ll {
+  display: block; opacity: 0;
+  transform: translateY(24px) scale(.93);
+  transition: none; will-change: opacity,transform;
+}
+.ll.in {
+  opacity: 1; transform: translateY(0) scale(1);
+  transition: opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
+}
+.ll.out {
+  opacity: 0; transform: translateY(-14px) scale(1.03);
+  transition: opacity .55s ease-in, transform .55s ease-in;
+}
+.ll.normal  { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(20px,4.5vw,60px); color:var(--ivory); letter-spacing:.03em; text-shadow:0 0 28px rgba(224,0,63,.5),0 2px 4px #000; }
+.ll.italic  { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(22px,5vw,66px); color:var(--ivory); letter-spacing:.04em; text-shadow:0 0 36px rgba(224,0,63,.6),0 2px 4px #000; }
+.ll.bold    { font-family:'Playfair Display',serif; font-weight:700; font-size:clamp(24px,5.4vw,72px); color:var(--petal); letter-spacing:.03em; text-shadow:0 0 50px rgba(224,0,63,.9),0 0 120px rgba(224,0,63,.35),0 2px 6px #000; }
+.ll.huge    { font-family:'Playfair Display',serif; font-style:italic; font-weight:700; font-size:clamp(38px,9vw,120px); letter-spacing:.08em; color:var(--ivory); text-shadow:0 0 65px rgba(224,0,63,1),0 0 140px rgba(224,0,63,.55),0 4px 12px #000; }
+.ll.small   { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(13px,2.4vw,32px); color:rgba(250,240,242,.45); letter-spacing:.07em; }
+.ll.mono    { font-family:'Cutive Mono',monospace; font-size:clamp(10px,1.5vw,18px); letter-spacing:.3em; color:rgba(255,214,228,.2); }
+.ll.love    { font-family:'Playfair Display',serif; font-style:italic; font-weight:700; font-size:clamp(26px,6.5vw,92px); letter-spacing:.07em; color:var(--blush); text-shadow:0 0 55px rgba(255,122,160,1),0 0 130px rgba(255,122,160,.5),0 0 210px rgba(224,0,63,.4); animation:lovep 1.1s ease-in-out infinite; }
+@keyframes lovep { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+
+.ll .w { display:inline; transition:color .1s,text-shadow .1s; }
+.ll .w.lit { color:var(--blush); text-shadow:0 0 20px rgba(255,122,160,.9),0 0 50px rgba(255,122,160,.5); }
+
+/* ─── TAP RIPPLE ─── */
+.ripple {
+  position: fixed; border-radius: 50%; pointer-events: none; z-index: 500;
+  transform: translate(-50%,-50%) scale(0);
+  animation: rip .78s ease-out forwards;
+}
+@keyframes rip { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(-50%,-50%) scale(7);opacity:0} }
+
+.tapword {
+  position: fixed; pointer-events: none; z-index: 501;
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  color: var(--blush); white-space: nowrap;
+  text-shadow: 0 0 16px rgba(255,122,160,.8);
+  animation: tw .95s ease-out forwards;
+}
+@keyframes tw {
+  0%   { opacity:1; transform:translate(-50%,-50%) scale(.5)  translateY(0) }
+  55%  { opacity:1; transform:translate(-50%,-50%) scale(1.1) translateY(-55px) }
+  100% { opacity:0; transform:translate(-50%,-50%) scale(.9)  translateY(-110px) }
+}
+
+/* ─── AUDIO BAR ─── */
+#abar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 24px 18px;
+  background: linear-gradient(to top, rgba(7,0,10,.97), transparent);
+}
+#pbtn {
+  width: 46px; height: 46px; flex-shrink: 0;
+  border: 1.5px solid rgba(224,0,63,.5); border-radius: 50%;
+  background: transparent; color: var(--ivory); font-size: 15px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .22s;
+}
+#pbtn:hover, #pbtn:active { background:var(--rose); border-color:var(--rose); box-shadow:0 0 22px rgba(224,0,63,.7); transform:scale(1.1); }
+#pw { flex:1; height:3px; background:rgba(255,255,255,.1); border-radius:3px; cursor:pointer; }
+#pf { height:100%; width:0%; background:linear-gradient(to right,var(--rose),var(--blush)); border-radius:3px; transition:width .18s linear; position:relative; }
+#pf::after { content:''; position:absolute; right:-5px; top:50%; transform:translateY(-50%); width:11px; height:11px; border-radius:50%; background:var(--blush); box-shadow:0 0 10px rgba(255,122,160,.9),0 0 22px rgba(255,122,160,.5); }
+#tdis { font-family:'Cutive Mono',monospace; font-size:11px; color:rgba(255,214,228,.28); letter-spacing:1px; flex-shrink:0; }
+#vwrap { display:flex; align-items:center; gap:7px; flex-shrink:0; }
+#vwrap span { font-family:'Cutive Mono',monospace; font-size:10px; color:rgba(255,214,228,.22); letter-spacing:3px; }
+#vsl { width:62px; accent-color:var(--rose); cursor:pointer; }
+
+/* ─── START SCREEN ─── */
+#ss {
+  position: fixed; inset: 0; z-index: 999;
+  background: radial-gradient(ellipse at center, #110007, #000003);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity 1.6s;
+}
+#ss.gone { opacity: 0; pointer-events: none; }
+.ss-pre  { font-family:'Cutive Mono',monospace; font-size:clamp(9px,1.3vw,12px); letter-spacing:8px; color:rgba(255,210,228,.22); text-transform:uppercase; animation:blink 2.6s ease-in-out infinite; }
+.ss-title{ font-family:'Playfair Display',serif; font-style:italic; font-weight:700; font-size:clamp(36px,10vw,120px); letter-spacing:.06em; color:var(--ivory); line-height:1.08; text-align:center; text-shadow:0 0 90px rgba(224,0,63,.55); max-width:88vw; }
+.ss-sub  { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(14px,2.4vw,26px); color:var(--blush); letter-spacing:.05em; text-shadow:0 0 22px rgba(255,122,160,.5); animation:blink 2s ease-in-out infinite; margin-top:2px; }
+.ss-btn  { margin-top:32px; border:1px solid rgba(224,0,63,.45); color:rgba(250,240,242,.55); background:transparent; font-family:'Cutive Mono',monospace; font-size:11px; letter-spacing:7px; padding:14px 46px; cursor:pointer; text-transform:uppercase; transition:all .28s; animation:blink 2s ease-in-out infinite; }
+.ss-btn:hover, .ss-btn:active { background:var(--rose); color:var(--ivory); border-color:var(--rose); box-shadow:0 0 28px rgba(224,0,63,.55); transform:scale(1.05); }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+@media (max-width:520px) { #vwrap{display:none} #abar{padding:10px 14px 16px;gap:10px} }
+</style>
+</head>
+<body>
+
+<!-- START SCREEN -->
+<div id="ss">
+  <div class="ss-pre">para siempre contigo</div>
+  <div class="ss-title">Te Amo<br>Marissa</div>
+  <div class="ss-sub">me encantas, Johana</div>
+  <button class="ss-btn" id="startBtn">Reproducir</button>
+</div>
+
+<!-- BG LAYERS -->
+<div id="bg"></div>
+<div class="orb" id="o1"></div>
+<div class="orb" id="o2"></div>
+<div class="orb" id="o3"></div>
+<div id="grain"></div>
+<div id="vig"></div>
+
+<!-- RAIN (DOM, no canvas) -->
+<div id="rainlayer"></div>
+
+<!-- CANVAS -->
+<canvas id="pcan"></canvas>
+<canvas id="wcan"></canvas>
+<div id="flash"></div>
+
+<!-- DEDICATION -->
+<div id="ded">
+  <div class="d-label">para siempre contigo</div>
+  <div class="d-name">Te Amo Marissa &nbsp;&mdash;&nbsp; Me Encantas, Johana</div>
+  <div class="d-rule"></div>
+</div>
+
+<!-- LYRICS -->
+<div id="stage">
+  <div id="lbox">
+    <span id="l0" class="ll"></span>
+    <span id="l1" class="ll"></span>
+    <span id="l2" class="ll"></span>
+  </div>
+</div>
+
+<!-- AUDIO: mismo directorio que index.html -->
+<audio id="audio" preload="auto">
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<!-- PLAYER -->
+<div id="abar">
+  <button id="pbtn">&#9654;</button>
+  <div id="pw"><div id="pf"></div></div>
+  <div id="tdis">0:00</div>
+  <div id="vwrap">
+    <span>vol</span>
+    <input id="vsl" type="range" min="0" max="1" step="0.02" value="0.9"
+           oninput="audio.volume=this.value">
+  </div>
+</div>
+
+<div id="cur"></div>
+
+<script>
+/* ============================================================
+   CUES — ajusta cada "t" al tiempo real de tu musica.mp3
+   ============================================================ */
+const CUES = [
+  { t:0,   lines:[],                                         styles:[],                         beat:false },
+  { t:3,   lines:['· · ·'],                                  styles:['mono'],                   beat:false },
+  { t:8,   lines:['para siempre'],                           styles:['mono'],                   beat:false },
+  { t:14,  lines:['Te Amo','Marissa'],                       styles:['love','love'],             beat:true  },
+  { t:20,  lines:['me encantas','Johana'],                   styles:['huge','huge'],             beat:true  },
+  { t:27,  lines:[''],                                       styles:['mono'],                   beat:false },
+  { t:55,  lines:['You are my angel'],                       styles:['italic'],                 beat:true  },
+  { t:60,  lines:['Come from way above'],                    styles:['italic'],                 beat:false },
+  { t:66,  lines:['To bring me love'],                       styles:['bold'],                   beat:true  },
+  { t:72,  lines:[''],                                       styles:['mono'],                   beat:false },
+  { t:75,  lines:['Her eyes',"she's on the dark side"],      styles:['small','italic'],          beat:false },
+  { t:82,  lines:['Turning the white side'],                 styles:['italic'],                 beat:false },
+  { t:87,  lines:['She says — how do you do'],               styles:['bold'],                   beat:true  },
+  { t:104, lines:['I live among you'],                       styles:['italic'],                 beat:false },
+  { t:109, lines:['Well disguised'],                         styles:['huge'],                   beat:true  },
+  { t:115, lines:['I live among you'],                       styles:['italic'],                 beat:false },
+  { t:120, lines:['Well disguised'],                         styles:['huge'],                   beat:true  },
+  { t:124, lines:['Te Amo Marissa'],                         styles:['love'],                   beat:true  },
+  { t:130, lines:['You are my angel'],                       styles:['bold'],                   beat:false },
+  { t:135, lines:['Come from way above'],                    styles:['italic'],                 beat:false },
+  { t:140, lines:['To bring me love'],                       styles:['bold'],                   beat:true  },
+  { t:145, lines:['i love you'],                             styles:['love'],                   beat:true  },
+  { t:149, lines:['You are my angel'],                       styles:['bold'],                   beat:false },
+  { t:154, lines:['Come from way above'],                    styles:['italic'],                 beat:false },
+  { t:159, lines:['To bring me love'],                       styles:['huge'],                   beat:true  },
+  { t:163, lines:['Johana'],                                 styles:['huge'],                   beat:true  },
+  { t:167, lines:['· · · · · · ·'],                          styles:['mono'],                   beat:false },
+  { t:176, lines:['i love you so much'],                     styles:['italic'],                 beat:false },
+  { t:183, lines:['· · ·'],                                  styles:['mono'],                   beat:false },
+  { t:188, lines:['siempre tuya'],                           styles:['love'],                   beat:true  },
+  { t:195, lines:[''],                                       styles:['mono'],                   beat:false },
+  { t:204, lines:['You are my angel'],                       styles:['italic'],                 beat:true  },
+  { t:209, lines:['Come from way above'],                    styles:['italic'],                 beat:false },
+  { t:214, lines:['To bring me love'],                       styles:['bold'],                   beat:true  },
+  { t:220, lines:[''],                                       styles:['mono'],                   beat:false },
+  { t:223, lines:['Her eyes',"she's on the dark side"],      styles:['small','italic'],          beat:false },
+  { t:230, lines:['Turning the white side'],                 styles:['italic'],                 beat:false },
+  { t:235, lines:['She says — how do you do'],               styles:['bold'],                   beat:true  },
+  { t:252, lines:['I live among you'],                       styles:['italic'],                 beat:false },
+  { t:257, lines:['Well disguised'],                         styles:['huge'],                   beat:true  },
+  { t:262, lines:['I live among you'],                       styles:['italic'],                 beat:false },
+  { t:267, lines:['Well disguised'],                         styles:['huge'],                   beat:true  },
+  { t:271, lines:['Te Amo Marissa'],                         styles:['love'],                   beat:true  },
+  { t:277, lines:['You are my angel'],                       styles:['bold'],                   beat:false },
+  { t:282, lines:['Come from way above'],                    styles:['italic'],                 beat:false },
+  { t:287, lines:['To bring me love'],                       styles:['bold'],                   beat:true  },
+  { t:292, lines:['me encantas, Johana'],                    styles:['love'],                   beat:true  },
+  { t:297, lines:['You are my angel'],                       styles:['bold'],                   beat:false },
+  { t:302, lines:['Come from way above'],                    styles:['italic'],                 beat:false },
+  { t:307, lines:['To bring me love'],                       styles:['huge'],                   beat:true  },
+  { t:313, lines:['come to me'],                             styles:['italic'],                 beat:false },
+  { t:318, lines:['from way above'],                         styles:['small'],                  beat:false },
+  { t:322, lines:['from way above'],                         styles:['small'],                  beat:false },
+  { t:326, lines:['Te Amo'],                                 styles:['huge'],                   beat:true  },
+  { t:330, lines:['i love you','Marissa'],                   styles:['love','bold'],             beat:true  },
+  { t:336, lines:['from way above'],                         styles:['small'],                  beat:false },
+  { t:340, lines:['siempre'],                                styles:['huge'],                   beat:true  },
+  { t:344, lines:['You are my angel'],                       styles:['bold'],                   beat:false },
+  { t:349, lines:['Come from way above'],                    styles:['italic'],                 beat:false },
+  { t:354, lines:['To bring me love'],                       styles:['bold'],                   beat:true  },
+  { t:358, lines:['i love you'],                             styles:['love'],                   beat:true  },
+  { t:362, lines:['You are my angel'],                       styles:['italic'],                 beat:false },
+  { t:366, lines:['Come from way above'],                    styles:['italic'],                 beat:false },
+  { t:370, lines:['To bring me love'],                       styles:['huge'],                   beat:true  },
+  { t:374, lines:['Te Amo Marissa'],                         styles:['love'],                   beat:true  },
+  { t:377, lines:['me encantas, Johana'],                    styles:['love'],                   beat:true  },
+];
+
+const RAIN_WORDS = ['i love you','te amo','Marissa','Johana','siempre','forever','mi amor','angel','me encantas','i love you','para siempre','te adoro'];
+const TAP_WORDS  = ['i love you','te amo','Marissa','Johana','siempre','para siempre','mi amor','me encantas','te adoro','forever','con todo','amor'];
+
+/* DOM */
+const audio     = document.getElementById('audio');
+const pbtn      = document.getElementById('pbtn');
+const pf        = document.getElementById('pf');
+const pw        = document.getElementById('pw');
+const tdis      = document.getElementById('tdis');
+const flashEl   = document.getElementById('flash');
+const cur       = document.getElementById('cur');
+const rainLayer = document.getElementById('rainlayer');
+const slots     = [document.getElementById('l0'),document.getElementById('l1'),document.getElementById('l2')];
+
+let cueIdx = -1;
+let actx, analyser, asrc, fdata;
+let audioReady = false;
+let rainStarted = false;
+
+/* CURSOR */
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+});
+
+/* ==========================================================
+   BOOT — AudioContext SOLO dentro del gesto del usuario
+   ========================================================== */
+document.getElementById('startBtn').addEventListener('click', function () {
+  document.getElementById('ss').classList.add('gone');
+
+  /* Crear AudioContext aqui, dentro del click */
+  if (!audioReady) {
+    try {
+      actx     = new (window.AudioContext || window.webkitAudioContext)();
+      analyser = actx.createAnalyser();
+      analyser.fftSize = 256;
+      fdata    = new Uint8Array(analyser.frequencyBinCount);
+      asrc     = actx.createMediaElementSource(audio);
+      asrc.connect(analyser);
+      analyser.connect(actx.destination);
+      audioReady = true;
+    } catch(e) {
+      /* Sin analyser, la musica igual funciona */
+      audioReady = true;
+    }
+  }
+
+  audio.volume = parseFloat(document.getElementById('vsl').value);
+
+  /* play() devuelve Promise — maneja ambos casos */
+  const p = audio.play();
+  if (p !== undefined) {
+    p.then(() => {
+      pbtn.innerHTML = '&#9646;&#9646;';
+      startRain();
+    }).catch(() => {
+      pbtn.innerHTML = '&#9654;';
+    });
+  } else {
+    pbtn.innerHTML = '&#9646;&#9646;';
+    startRain();
+  }
+
+  setTimeout(() => { document.getElementById('ded').style.opacity = '0.14'; }, 6000);
+});
+
+/* PLAY / PAUSA */
+pbtn.addEventListener('click', () => {
+  if (!audioReady) return;
+  if (audio.paused) {
+    if (actx && actx.state === 'suspended') actx.resume();
+    audio.play().then(() => { pbtn.innerHTML = '&#9646;&#9646;'; startRain(); }).catch(() => {});
+  } else {
+    audio.pause();
+    pbtn.innerHTML = '&#9654;';
+  }
+});
+
+/* SEEK */
+pw.addEventListener('click', e => {
+  if (!audio.duration) return;
+  const r = pw.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+});
+
+function fmt(s) {
+  s = Math.floor(s || 0);
+  return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+}
+
+/* ==========================================================
+   LYRIC ENGINE
+   ========================================================== */
+function clearSlot(el) {
+  el.classList.remove('in','out','normal','italic','bold','huge','small','mono','love');
+  el.textContent = '';
+}
+
+function showCue(c) {
+  slots.forEach(sl => {
+    if (sl.classList.contains('in')) {
+      sl.classList.remove('in'); sl.classList.add('out');
+      setTimeout(() => clearSlot(sl), 700);
+    }
+  });
+  if (!c.lines || !c.lines.length) return;
+
+  if (c.beat) {
+    flashEl.style.transition = 'none';
+    flashEl.style.opacity = '1';
+    requestAnimationFrame(() => {
+      flashEl.style.transition = 'opacity .22s ease-out';
+      flashEl.style.opacity = '0';
+    });
+    burstParticles(5);
+  }
+
+  c.lines.forEach((txt, i) => {
+    const sl = slots[i]; if (!sl) return;
+    clearSlot(sl);
+    const sty = (c.styles && c.styles[i]) || 'normal';
+    sl.classList.add(sty);
+    if (txt && sty !== 'mono') {
+      sl.innerHTML = txt.split(' ').map(w => `<span class="w">${w}</span>`).join(' ');
+    } else {
+      sl.textContent = txt;
+    }
+    setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(() => sl.classList.add('in'))), i * 65);
+  });
+  if (c.lines[0]) setTimeout(() => animWords(0), 300);
+}
+
+let wordTimer;
+function animWords(i) {
+  clearTimeout(wordTimer);
+  const sl = slots[i]; if (!sl) return;
+  const ws = sl.querySelectorAll('.w'); if (!ws.length) return;
+  let wi = 0;
+  const step = () => {
+    if (wi > 0) ws[wi-1].classList.remove('lit');
+    if (wi < ws.length) { ws[wi].classList.add('lit'); wi++; wordTimer = setTimeout(step, 185 + Math.random()*95); }
+  };
+  step();
+}
+
+function findCue(t) {
+  let idx = -1;
+  for (let i = 0; i < CUES.length; i++) { if (CUES[i].t <= t) idx = i; else break; }
+  return idx;
+}
+
+/* ==========================================================
+   LLUVIA ELEGANTE — DOM puro, columnas bien separadas
+   ========================================================== */
+const COLS       = 7;
+const colCooldown = new Array(COLS).fill(0); /* timestamp del ultimo drop por columna */
+
+function startRain() {
+  if (rainStarted) return;
+  rainStarted = true;
+  dropLoop();
+}
+
+function dropLoop() {
+  spawnDrop();
+  setTimeout(dropLoop, 500 + Math.random() * 800);
+}
+
+function spawnDrop(forcedX) {
+  const word     = RAIN_WORDS[Math.floor(Math.random() * RAIN_WORDS.length)];
+  const fontSize = 12 + Math.random() * 11;          /* 12–23 px */
+  const opacity  = 0.10 + Math.random() * 0.18;      /* 0.10–0.28, muy sutil */
+  const dur      = 8000 + Math.random() * 7000;       /* 8–15 s */
+
+  /* Elegir columna con menor cooldown para evitar amontonamiento */
+  let col = 0;
+  let minT = Infinity;
+  const now = Date.now();
+  for (let c = 0; c < COLS; c++) {
+    if (colCooldown[c] < minT) { minT = colCooldown[c]; col = c; }
+  }
+  colCooldown[col] = now + 900 + Math.random() * 600; /* no reusar esta columna por ~0.9-1.5s */
+
+  const colW   = window.innerWidth / COLS;
+  const startX = forcedX != null ? forcedX : colW * col + colW * 0.25 + Math.random() * colW * 0.5;
+
+  const el = document.createElement('div');
+  el.className = 'rd';
+  el.textContent = word;
+  el.style.cssText = `
+    left: ${startX}px;
+    top: -28px;
+    font-size: ${fontSize}px;
+    opacity: 0;
+  `;
+  rainLayer.appendChild(el);
+
+  /* Animacion via Web Animations API — sin CSS classes, sin conflictos */
+  const anim = el.animate([
+    { opacity: 0,       transform: 'translateY(0px)',                            offset: 0    },
+    { opacity: opacity, transform: `translateY(${window.innerHeight * 0.1}px)`, offset: 0.07 },
+    { opacity: opacity, transform: `translateY(${window.innerHeight * 0.88}px)`,offset: 0.93 },
+    { opacity: 0,       transform: `translateY(${window.innerHeight + 28}px)`,  offset: 1    },
+  ], { duration: dur, easing: 'linear', fill: 'forwards' });
+
+  anim.onfinish = () => el.remove();
+}
+
+/* ==========================================================
+   TAP EFFECTS
+   ========================================================== */
+function spawnTap(x, y) {
+  /* 3 anillos */
+  const rings = [
+    { size: 26, border: '1.5px solid var(--rose)',             delay: 0   },
+    { size: 16, border: '1px solid var(--blush)',              delay: 140 },
+    { size: 44, border: '1px solid rgba(255,122,160,.25)',     delay: 280 },
+  ];
+  rings.forEach(({ size, border, delay }) => {
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    r.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;border:${border};animation-delay:${delay}ms;`;
+    document.body.appendChild(r);
+    setTimeout(() => r.remove(), 900 + delay);
+  });
+
+  /* Palabra principal */
+  const w = TAP_WORDS[Math.floor(Math.random() * TAP_WORDS.length)];
+  const tw = document.createElement('div');
+  tw.className = 'tapword';
+  tw.textContent = w;
+  tw.style.cssText = `left:${x}px;top:${y}px;font-size:${14+Math.random()*10}px;`;
+  document.body.appendChild(tw);
+  setTimeout(() => tw.remove(), 1000);
+
+  /* Segunda palabra */
+  if (Math.random() > .42) {
+    const w2 = TAP_WORDS[Math.floor(Math.random() * TAP_WORDS.length)];
+    const tw2 = document.createElement('div');
+    tw2.className = 'tapword';
+    tw2.textContent = w2;
+    tw2.style.cssText = `left:${x+(Math.random()-.5)*55}px;top:${y+14}px;font-size:${11+Math.random()*8}px;opacity:.6;animation-delay:.2s;`;
+    document.body.appendChild(tw2);
+    setTimeout(() => tw2.remove(), 1200);
+  }
+
+  /* Particulas + gotas locales */
+  burstParticles(10, x, y);
+  for (let i = 0; i < 3; i++) setTimeout(() => spawnDrop(x + (Math.random()-.5)*70), i*90);
+}
+
+document.addEventListener('click', e => {
+  cur.classList.add('big');
+  setTimeout(() => cur.classList.remove('big'), 200);
+  spawnTap(e.clientX, e.clientY);
+});
+document.addEventListener('touchstart', e => {
+  Array.from(e.touches).forEach(t => spawnTap(t.clientX, t.clientY));
+}, { passive: true });
+
+/* ==========================================================
+   PARTICULAS (canvas)
+   ========================================================== */
+const pcan = document.getElementById('pcan');
+const pctx = pcan.getContext('2d');
+let pts = [];
+function rsP() { pcan.width = innerWidth; pcan.height = innerHeight; }
+rsP(); window.addEventListener('resize', rsP);
+
+class Pt {
+  constructor(x, y) {
+    this.x = x ?? Math.random()*pcan.width;
+    this.y = y ?? Math.random()*pcan.height;
+    this.vx = (Math.random()-.5)*1.8; this.vy = (Math.random()-1.7)*1.9;
+    this.a = Math.random()*.55+.2; this.r = Math.random()*2.8+.4;
+    this.c = Math.random()>.5 ? '#e0003f' : '#ff7aa0';
+  }
+  tick() { this.x+=this.vx; this.y+=this.vy; this.vy+=.042; this.a-=.008; }
+  draw() {
+    pctx.save(); pctx.globalAlpha=Math.max(0,this.a);
+    pctx.fillStyle=this.c; pctx.shadowColor=this.c; pctx.shadowBlur=8;
+    pctx.beginPath(); pctx.arc(this.x,this.y,this.r,0,Math.PI*2); pctx.fill(); pctx.restore();
+  }
+}
+function burstParticles(n,x,y) {
+  const cx=x??pcan.width/2, cy=y??pcan.height/2;
+  for(let i=0;i<n;i++) pts.push(new Pt(cx+(Math.random()-.5)*70, cy+(Math.random()-.5)*35));
+}
+setInterval(()=>{ if(pts.length<45) pts.push(new Pt()); }, 700);
+(function animP(){
+  requestAnimationFrame(animP);
+  pctx.clearRect(0,0,pcan.width,pcan.height);
+  pts = pts.filter(p=>p.a>0);
+  pts.forEach(p=>{p.tick();p.draw();});
+})();
+
+/* ==========================================================
+   WAVEFORM (canvas)
+   ========================================================== */
+const wcan = document.getElementById('wcan');
+const wctx = wcan.getContext('2d');
+function rsW() { wcan.width=innerWidth; wcan.height=80; }
+rsW(); window.addEventListener('resize', rsW);
+(function animW(){
+  requestAnimationFrame(animW);
+  if(!analyser) return;
+  analyser.getByteFrequencyData(fdata);
+  wctx.clearRect(0,0,wcan.width,wcan.height);
+  const bars=fdata.length, bw=(wcan.width/bars)*1.85;
+  let x=0;
+  for(let i=0;i<bars;i++){
+    const v=fdata[i]/255, h=v*wcan.height;
+    const g=wctx.createLinearGradient(0,wcan.height-h,0,wcan.height);
+    g.addColorStop(0,`rgba(224,0,63,${v*.95})`);
+    g.addColorStop(.5,`rgba(255,122,160,${v*.45})`);
+    g.addColorStop(1,`rgba(0,0,0,0)`);
+    wctx.fillStyle=g; wctx.fillRect(x,wcan.height-h,bw-.8,h); x+=bw+.3;
+  }
+})();
+
+/* ==========================================================
+   TIMEUPDATE
+   ========================================================== */
+audio.addEventListener('timeupdate', () => {
+  const t   = audio.currentTime;
+  const dur = audio.duration || 0;
+  if (dur) pf.style.width = `${(t/dur)*100}%`;
+  tdis.textContent = dur ? `${fmt(t)} / ${fmt(dur)}` : fmt(t);
+
+  const idx = findCue(t);
+  if (idx !== cueIdx) { cueIdx = idx; if(idx >= 0) showCue(CUES[idx]); }
+
+  if (audioReady && analyser && fdata) {
+    analyser.getByteFrequencyData(fdata);
+    const bass = fdata.slice(0,4).reduce((a,b)=>a+b,0)/4;
+    if (bass > 172) burstParticles(2);
+  }
+});
+
+audio.addEventListener('ended', () => {
+  pbtn.innerHTML = '&#9654;';
+  slots.forEach(sl => { sl.classList.remove('in'); sl.classList.add('out'); });
+  setTimeout(() => {
+    slots.forEach(clearSlot);
+    [['Te Amo Marissa','love'],['Me Encantas, Johana','love']].forEach(([txt,sty],i) => {
+      clearSlot(slots[i]); slots[i].classList.add(sty); slots[i].textContent = txt;
+      setTimeout(() => requestAnimationFrame(()=>requestAnimationFrame(()=>slots[i].classList.add('in'))), i*220);
+    });
+  }, 900);
+});
+
+/* TECLADO */
+document.addEventListener('keydown', e => {
+  if(e.code==='Space')      { e.preventDefault(); pbtn.click(); }
+  if(e.code==='ArrowRight') audio.currentTime=Math.min(audio.currentTime+10, audio.duration||0);
+  if(e.code==='ArrowLeft')  audio.currentTime=Math.max(audio.currentTime-10, 0);
+  if(e.code==='ArrowUp')    { audio.volume=Math.min(audio.volume+.08,1); document.getElementById('vsl').value=audio.volume; }
+  if(e.code==='ArrowDown')  { audio.volume=Math.max(audio.volume-.08,0); document.getElementById('vsl').value=audio.volume; }
+});
+</script>
+</body>
+</html>
